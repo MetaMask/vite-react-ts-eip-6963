@@ -9,15 +9,11 @@ export const  DiscoverWalletProviders = () => {
   const [userAccount, setUserAccount] = useState<string>('')
 
   const providers = useSyncProviders()
-  // console.log(`providers: `, providers)
   
   const handleConnect = async(providerWithInfo: EIP6963ProviderDetail)=> {
-    console.log(`providerWithInfo: `, providerWithInfo)
     const accounts = await providerWithInfo.provider
     .request({method:'eth_requestAccounts'})
     .catch(console.error)
-
-    console.log(accounts)
 
     if(accounts?.[0]){
       setSelectedWallet(providerWithInfo)
@@ -43,25 +39,14 @@ export const  DiscoverWalletProviders = () => {
         </div>
       </div>
       <div>User Account: {userAccount}</div>
-      { userAccount && selectedWallet.provider
-      
-      ? <div className={styles.walletDetails}>
+      { (userAccount && selectedWallet.provider) &&
+        <div className={styles.walletDetails}>
           <div>Wallet Details:</div>
-          <div className={styles.display}>
-            <div>name: {selectedWallet.info.name}</div>
-            <div>uuid: {selectedWallet.info.uuid}</div>
-            {/* <div>chainId: {selectedWallet.info.chainId}</div>
-            export interface EIP6963ProviderInfo {
-              name: string;
-              uuid: string;
-              rpcUrl: string;
-              chainId: string; // Add the chainId property
-            }
-            <div>rpcUrl: {selectedWallet.info.rpcUrl}</div>
-            <div>provider: {selectedWallet.provider}</div> */}
-          </div>
+          <ol>
+            <li>name: {selectedWallet.info.name}</li>
+            <li>uuid: {selectedWallet.info.uuid}</li>
+          </ol>
         </div>
-        : <></>
       }
       <div>Selected Wallet: {selectedWallet.info.name}</div>
     </>

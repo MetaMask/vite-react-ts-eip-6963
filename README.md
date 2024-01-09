@@ -162,7 +162,6 @@ With this hook and store in place, we can now create a basic compnentat the foll
 ### DiscoverWalletProviders.tsx
 
 ```ts=
-import styles from './DiscoverWalletProviders.module.css'
 import { useState } from 'react'
 import { useSyncProviders } from '../hooks/useSyncProviders';
 
@@ -172,10 +171,8 @@ export const  DiscoverWalletProviders = () => {
   const [userAccount, setUserAccount] = useState<string>('')
 
   const providers = useSyncProviders()
-  console.log(`providers: `, providers)
   
   const handleConnect = async(providerWithInfo: EIP6963ProviderDetail)=> {
-    console.log(`providerWithInfo: `, providerWithInfo)
     const accounts = await providerWithInfo.provider
     .request({method:'eth_requestAccounts'})
     .catch(console.error)
@@ -204,6 +201,15 @@ export const  DiscoverWalletProviders = () => {
         </div>
       </div>
       <div>User Account: {userAccount}</div>
+      { (userAccount && selectedWallet.provider) &&
+        <div className={styles.walletDetails}>
+          <div>Wallet Details:</div>
+          <ol>
+            <li>name: {selectedWallet.info.name}</li>
+            <li>uuid: {selectedWallet.info.uuid}</li>
+          </ol>
+        </div>
+      }
       <div>Selected Wallet: {selectedWallet.info.name}</div>
     </>
   )
