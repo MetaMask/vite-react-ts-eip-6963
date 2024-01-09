@@ -1,3 +1,15 @@
 .display {
+  display: flex;
+  flex-direction: column;
+}
+.button {
+  padding: 1em;
+  margin-bottom: 0.5em;
+}
+.button:first-child {
+  margin-top: 0.5em;
+}
+.detectedWallets {
+  border: 1px solid #75079d;
   padding: 1em;
 }

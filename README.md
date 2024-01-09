@@ -18,7 +18,9 @@ This creates a nice framework for understanding everything to come as we read th
 
 ## Issues Predating EIP-6963
 
-In Ethereum decentralized applications (dApps), wallets traditionally expose their APIs using a JavaScript object known as 'the Provider.' The initial EIP created to standardize this interface was [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193), conflicts arose among different wallet implementations. While EIP-1193 aimed to establish a common convention, the user experience suffered due to race conditions caused by wallets injecting their providers into the browser window (Ethereum Object). In fact, most who criticize Web3 start with UX shortcomings around wallet onboarding and connection.
+In Ethereum decentralized applications (dApps), wallets traditionally expose their APIs using a JavaScript object known as 'the Provider.' The initial EIP created to standardize this interface was [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193), conflicts arose among different wallet implementations. 
+
+While EIP-1193 aimed to establish a common convention, the user experience suffered due to race conditions caused by wallets injecting their providers into the browser window (Ethereum Object). In fact, most who criticize Web3 start with UX shortcomings around wallet onboarding and connection.
 
 These race conditions resulted in multiple wallet extensions enabled in the same browser having conflicts, where the last injected provider typically took precedence.
 
@@ -26,9 +28,9 @@ These race conditions resulted in multiple wallet extensions enabled in the same
 
 As a developer, the first thing you should do in order to get familiar with [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963), is to understand the initial motive, basic description, and more importantly the (TypeScript) interfaces and objects needed to implement this new approach.
 
-## Integrating it on your own
+## Implementing EIP-6963 in a ViteJS React + TS Application
 
-The Provider MUST implement and expose the API defined in this section. All API entities MUST adhere to the types and interfaces defined in this section.
+The Provider MUST implement and expose the interfaces defined in the EIP. Let's review them real quick, i have also provided links to each section of the original EIP for reference.
 
 [Provider Info](https://eips.ethereum.org/EIPS/eip-1193#request)
 
@@ -80,7 +82,44 @@ interface EIP6963RequestProviderEvent extends Event {
 }
 ```
 
-In React we can create a hook using the following code that can also be found in WalletConnect GitHub repo named "EIP6963", which is a React web dApp showcasing the implementation and usage of EIP-6963:
+With these interfaces defined for us, we can spin up a ViteJS React + TypeScript application and update the `src/vite-env.d.ts` with those interfaces all in one file:
+
+### vite-env.d.ts
+
+```ts=
+/// <reference types="vite/client" />
+
+interface EIP6963ProviderDetail {
+  info: EIP6963ProviderInfo;
+  provider: EIP1193Provider;
+}
+
+interface EIP6963ProviderInfo {
+  walletId: string;
+  uuid: string;
+  name: string;
+  icon: string;
+}
+
+/* Type EIP1193Provider is documented at EIP-1193 */
+interface EIP1193Provider {
+  isStatus?: boolean;
+  host?: string;
+  path?: string;
+  sendAsync?: (request: { method: string, params?: Array<unknown> }, callback: (error: Error | null, response: unknown) => void) => void
+  send?: (request: { method: string, params?: Array<unknown> }, callback: (error: Error | null, response: unknown) => void) => void
+  request: (request: { method: string, params?: Array<unknown> }) => Promise<unknown>
+}
+
+type EIP6963AnnounceProviderEvent = {
+  detail:{
+    info: EIP6963ProviderInfo,
+    provider: EIP1193Provider
+  }
+}
+```
+
+We can then create a `hooks` directory and add the two following files:
 
 ### useSyncProviders.tsx
 
@@ -118,24 +157,25 @@ export const store = {
 }
 ```
 
-With this hook and store, we can now create a basic implementation within a component
+With this hook and store in place, we can now create a basic compnentat the following location: `src/components/DiscoverWalletProviders.tsx` this component will map over those discovered providers and list them using a button that handles connections to those wallets:
 
-### EIP6963.tsx
-
-> I have removed formatting and styles to reduce code, if you would like to see this implementation in action, clone the repo at: [github.com/WalletConnect/EIP6963](https://github.com/WalletConnect/EIP6963.git)
+### DiscoverWalletProviders.tsx
 
 ```ts=
-"use client"
+import styles from './DiscoverWalletProviders.module.css'
 import { useState } from 'react'
 import { useSyncProviders } from '../hooks/useSyncProviders';
 
-const EIP6963 = () => {
+export const  DiscoverWalletProviders = () => {
+
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
   const [userAccount, setUserAccount] = useState<string>('')
 
   const providers = useSyncProviders()
+  console.log(`providers: `, providers)
   
   const handleConnect = async(providerWithInfo: EIP6963ProviderDetail)=> {
+    console.log(`providerWithInfo: `, providerWithInfo)
     const accounts = await providerWithInfo.provider
     .request({method:'eth_requestAccounts'})
     .catch(console.error)
@@ -148,27 +188,53 @@ const EIP6963 = () => {
  
   return (
     <>
-      <div>
-        {
-          providers.length > 0 
-            ? providers?.map((v: any)=>(
-              <div key={v.info.uuid} onClick={()=>handleConnect(v)} >
-                <span>
-                  {v.info.icon && <img src={v.info.icon} />} {v.info.name}
-                </span>
-              </div>
-              )) 
-            :
-              <div>No Announced Providers</div>
-        }
+      <div className={styles.detectedWallets}>
+        <div>Wallets Detected:</div>
+        <div className={styles.display}>
+          {
+            providers.length > 0 ? providers?.map((provider: any)=>(
+            <button className={styles.button} key={provider.info.uuid} onClick={()=>handleConnect(provider)} >
+              <span>{provider.info.name}</span>
+            </button>
+            )) :
+            <div>
+              there are no Announced Providers
+            </div>
+          }
+        </div>
       </div>
-      User Account: {userAccount}
+      <div>User Account: {userAccount}</div>
+      <div>Selected Wallet: {selectedWallet.info.name}</div>
+    </>
+  )
+}
+```
+
+In the code above, as soon as the page is rendered we are logging the providers that we have detected. See lline 11. We can loop over these providers and create a button for each one, this button will be used to call `eth_requestAccounts`.
+
+Finally we can link to this coomponent from `src/App.tsx`
+
+### App.tsx
+
+```ts=
+import './App.css'
+import { DiscoverWalletProviders } from './components/DiscoverWalletProviders'
+
+function App() {
+
+  return (
+    <>
+      <DiscoverWalletProviders/>
     </>
   )
 }
 
-export default EIP6963
+export default App
+
 ```
+
+With these few steps we have implemented EIP-6963 into a React application utilizing the TypeScript interfaces outlined in the EIP. At a basic level, that's it. You can see the source code here: [vite-react-ts-eip-6963
+](https://github.com/MetaMask/vite-react-ts-eip-6963)
 
 ## Third Party Library Support
 
@@ -226,6 +292,7 @@ Read more about [EIP-6963 backwards compatibility](https://eips.ethereum.org/EIP
 
 ## Resources for Reading on EIP-6963
 
+[NextJS Version of this same App by the Wallet Connect team](https://github.com/WalletConnect/EIP6963)
 [Overview of EIP-6963: A Possible Solution for Multiple Wallet Conflict](https://mundus.dev/tpost/76iu0k1ot1-overview-of-eip-6963-a-possible-solution)
 [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963)
 [EIP-6963 Standardizes Your Browser Wallet Experience](https://www.youtube.com/watch?v=SWmknCUwr3Y&t=281s)
@@ -256,20 +323,21 @@ EIP-6963 in MetaMask Extension
 
 Blog Post Action Items:
 
-Collaborate with the team to update technical docs related to the recent rollout of support for EIP-6963. At least, the following docs pages may need to be updated: 
-Ethereum Provider API (maybe we could add a note to this page on provider discovery)
-Ethereum Provider API Reference (would be nice to add interactivity here, but not needed) 
-HowTo Connect to MetaMask Convenience Libraries
+[ ] Collaborate with the team to update technical docs related to the recent rollout of support for EIP-6963. At least, the following docs pages may need to be updated: 
+[ ] Ethereum Provider API (maybe we could add a note to this page on provider discovery)
+[ ] Ethereum Provider API Reference (would be nice to add interactivity here, but not needed) 
+[ ] HowTo Connect to MetaMask Convenience Libraries
 
-Resources: 
-- https://github.com/MetaMask/snaps/discussions/2001
-- https://github.com/WalletConnect/web3modal/issues/1092
-- 
 
 Actionable items:
 Get to a lower level of detail in our docs. We want our reference documentation updated. 
 Can we create a demo that can connect to multiple wallets and target which one is active or selected to use.
 
-Update the existing tutorials.
+Update any existing tutorials.
 
 We have a developer call coming up. We want to touch briefly on this call and reintroduce MIPs in this call and wallet_revokePermissions in collab with portfolio dapp team.
+
+Docs pages that need to be updates:
+1. Tutorials 1 & 2 on wallet?
+    2. We can update these tutorials in order to iincorporate implementing EIP-6963. 
+3. Detect MetaMask should we promote the EIP-6963 method of detecting MM or should we show both?
