@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import styles from './DiscoverWalletProviders.module.css'
 import { useState } from 'react'
-import { useSyncProviders } from '../hooks/useSyncProviders';
+import { useSyncProviders } from '../hooks/useSyncProviders'
+import { formatAddress, formatChainAsNum } from '~/utils'
 
 export const  DiscoverWalletProviders = () => {
 
@@ -38,17 +39,13 @@ export const  DiscoverWalletProviders = () => {
           }
         </div>
       </div>
-      <div>User Account: {userAccount}</div>
+      <div className={styles.userAccount} >Account Details: {formatAddress(userAccount)} </div>
       { (userAccount && selectedWallet.provider) &&
         <div className={styles.walletDetails}>
-          <div>Wallet Details:</div>
-          <ol>
-            <li>name: {selectedWallet.info.name}</li>
-            <li>uuid: {selectedWallet.info.uuid}</li>
-          </ol>
+          <div>name: {selectedWallet.info.name}</div>
+          <div>uuid: {selectedWallet.info.uuid}</div>
         </div>
       }
-      <div>Selected Wallet: {selectedWallet.info.name}</div>
     </>
   )
 }

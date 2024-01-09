@@ -9,10 +9,16 @@
 .button:first-child {
   margin-top: 0.5em;
 }
+.button:last-child {
+  margin-bottom: 0;
+}
 .detectedWallets {
   border: 1px solid #75079d;
   padding: 1em;
 }
+.userAccount {
+  margin-top: 1em;
+}
 .walletDetails {
-  padding: 1em;
+  text-justify: auto;
 }
