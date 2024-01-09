@@ -163,7 +163,8 @@ With this hook and store in place, we can now create a basic compnentat the foll
 
 ```ts=
 import { useState } from 'react'
-import { useSyncProviders } from '../hooks/useSyncProviders';
+import { useSyncProviders } from '../hooks/useSyncProviders'
+import { formatAddress } from '~/utils'
 
 export const  DiscoverWalletProviders = () => {
 
@@ -185,32 +186,27 @@ export const  DiscoverWalletProviders = () => {
  
   return (
     <>
-      <div className={styles.detectedWallets}>
+      <div>
         <div>Wallets Detected:</div>
-        <div className={styles.display}>
+        <div>
           {
-            providers.length > 0 ? providers?.map((provider: any)=>(
-            <button className={styles.button} key={provider.info.uuid} onClick={()=>handleConnect(provider)} >
-              <span>{provider.info.name}</span>
-            </button>
-            )) :
-            <div>
-              there are no Announced Providers
-            </div>
+            providers.length > 0 
+              ? providers?.map((provider: any)=>(
+                <button key={provider.info.uuid} onClick={()=>handleConnect(provider)} >
+                  <span>{provider.info.name}</span>
+                </button>)) 
+              : <div>there are no Announced Providers</div>
           }
         </div>
       </div>
-      <div>User Account: {userAccount}</div>
-      { (userAccount && selectedWallet.provider) &&
+      <div className={styles.userAccount} >Account Details: {formatAddress(userAccount)} </div>
+      { 
+        (userAccount && selectedWallet.provider) &&
         <div className={styles.walletDetails}>
-          <div>Wallet Details:</div>
-          <ol>
-            <li>name: {selectedWallet.info.name}</li>
-            <li>uuid: {selectedWallet.info.uuid}</li>
-          </ol>
+          <div>name: {selectedWallet.info.name}</div>
+          <div>uuid: {selectedWallet.info.uuid}</div>
         </div>
       }
-      <div>Selected Wallet: {selectedWallet.info.name}</div>
     </>
   )
 }
