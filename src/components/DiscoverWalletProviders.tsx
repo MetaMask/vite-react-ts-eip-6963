@@ -2,7 +2,7 @@
 import styles from './DiscoverWalletProviders.module.css'
 import { useState } from 'react'
 import { useSyncProviders } from '../hooks/useSyncProviders'
-import { formatAddress, formatChainAsNum } from '~/utils'
+import { formatAddress } from '~/utils'
 
 export const  DiscoverWalletProviders = () => {
 
