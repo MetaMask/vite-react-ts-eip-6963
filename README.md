@@ -1,12 +1,12 @@
 # A Guide to EIP-6963 for Developers
 
-This article aims to fast track your understanding of this new EIP, answer the questions that you may have around how to implement it, and provides a  GitHub repo for those that want to skip the chit chat.
+This article will fast track your understanding of EIP-6963, answer questions about how to implement, and provide example code for those who'd like to skip the chit chat.
 
-[vite-react-ts-eip-6963](https://github.com/MetaMask/vite-react-ts-eip-6963)
+GitHub Demo Repo: [vite-react-ts-eip-6963](https://github.com/MetaMask/vite-react-ts-eip-6963)
 
-The Example code repo above will help you create this simple implementation of EIP-6963 for detecting multiple injected providers (browser installed EOAs) using ViteJS React + TypeScript.
+The Example code repo above will help you create a simple implementation of EIP-6963 for detecting multiple injected providers (browser installed wallets (Externally Owned Accounts)) using ViteJS React + TypeScript.
 
-![EIP-6963 React Demo](https://imgur.com/meZv8Tk.gif)
+![EIP-6963 React Demo](https://imgur.com/j79GvQ9.gif)
 
 ## The EIP-6963 Abstract
 
@@ -94,7 +94,7 @@ interface EIP6963RequestProviderEvent extends Event {
 }
 ```
 
-With these interfaces defined for us, we can spin up a ViteJS React + TypeScript application and update the `src/vite-env.d.ts` with those interfaces all in one file:
+With these interfaces defined for us, we can spin up a ViteJS React + TypeScript application and update the `src/vite-env.d.ts` with those interfaces:
 
 ### vite-env.d.ts
 
@@ -113,7 +113,6 @@ interface EIP6963ProviderInfo {
   icon: string;
 }
 
-/* Type EIP1193Provider is documented at EIP-1193 */
 interface EIP1193Provider {
   isStatus?: boolean;
   host?: string;
@@ -179,17 +178,15 @@ import { useSyncProviders } from '../hooks/useSyncProviders'
 import { formatAddress } from '~/utils'
 
 export const  DiscoverWalletProviders = () => {
-
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
   const [userAccount, setUserAccount] = useState<string>('')
-
   const providers = useSyncProviders()
   
   const handleConnect = async(providerWithInfo: EIP6963ProviderDetail)=> {
     const accounts = await providerWithInfo.provider
-    .request({method:'eth_requestAccounts'})
-    .catch(console.error)
-
+      .request({method:'eth_requestAccounts'})
+      .catch(console.error)
+      
     if(accounts?.[0]){
       setSelectedWallet(providerWithInfo)
       setUserAccount(accounts?.[0])
@@ -198,25 +195,29 @@ export const  DiscoverWalletProviders = () => {
  
   return (
     <>
+      <h2>Wallets Detected:</h2>
       <div>
-        <div>Wallets Detected:</div>
-        <div>
-          {
-            providers.length > 0 
-              ? providers?.map((provider: any)=>(
-                <button key={provider.info.uuid} onClick={()=>handleConnect(provider)} >
-                  <span>{provider.info.name}</span>
-                </button>)) 
-              : <div>there are no Announced Providers</div>
-          }
-        </div>
+        {
+          providers.length > 0 ? providers?.map((provider: EIP6963ProviderDetail)=>(
+            <button key={provider.info.uuid} onClick={()=>handleConnect(provider)} >
+              <img src={provider.info.icon} alt={provider.info.name} />
+              <div>{provider.info.name}</div>
+            </button>
+          )) :
+          <div>
+            there are no Announced Providers
+          </div>
+        }
       </div>
-      <div className={styles.userAccount} >Account Details: {formatAddress(userAccount)} </div>
-      { 
-        (userAccount && selectedWallet.provider) &&
-        <div className={styles.walletDetails}>
-          <div>name: {selectedWallet.info.name}</div>
-          <div>uuid: {selectedWallet.info.uuid}</div>
+      <hr />
+      <h2>{ userAccount ? "" : "No " }Wallet Selected</h2>
+      { userAccount &&
+        <div>
+          <div>
+            <img src={selectedWallet.info.icon} alt={selectedWallet.info.name} />
+            <div>{selectedWallet.info.name}</div>
+            <div>({formatAddress(userAccount)})</div>
+          </div>
         </div>
       }
     </>
