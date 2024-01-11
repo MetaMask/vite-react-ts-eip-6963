@@ -1,24 +1,26 @@
 .display {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
-.button {
-  padding: 1em;
+
+.logo {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+
+  padding: 0.6em 1.2em;
   margin-bottom: 0.5em;
+
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: 500;
 }
-.button:first-child {
-  margin-top: 0.5em;
+.logo > img {
+  width: 2em;
+  height: 1.5em;
+  margin-right: 1em;
 }
-.button:last-child {
-  margin-bottom: 0;
-}
-.detectedWallets {
-  border: 1px solid #75079d;
-  padding: 1em;
-}
-.userAccount {
-  margin-top: 1em;
-}
-.walletDetails {
-  text-justify: auto;
+.logo > div {
+  margin-right: 1em;
 }
