@@ -1,3 +1,13 @@
+# A Guide to EIP-6963 for Developers
+
+This article aims to fast track your understanding of this new EIP, answer the questions that you may have around how to implement it, and provides a  GitHub repo for those that want to skip the chit chat.
+
+[vite-react-ts-eip-6963](https://github.com/MetaMask/vite-react-ts-eip-6963)
+
+The Example code repo above will help you create this simple implementation of EIP-6963 for detecting multiple injected providers (browser installed EOAs) using ViteJS React + TypeScript.
+
+![EIP-6963 React Demo](https://imgur.com/meZv8Tk.gif)
+
 ## The EIP-6963 Abstract
 
 > An alternative discovery mechanism to `window.ethereum` for [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193) providers which **_supports discovering multiple injected Wallet Providers_** in a web page using Javascript’s window events.
@@ -10,11 +20,13 @@ It would also be helpful to understand [EIP-1193](https://eips.ethereum.org/EIPS
 
 IMO, the most important line from the [EIP-6963 abstract](https://eips.ethereum.org/EIPS/eip-6963#abstract) is:
 
-**_"An alternative discovery mechanism to window.ethereum for EIP-1193 providers"_**
+**_"An alternative discovery mechanism to `window.ethereum` for EIP-1193 providers"_**
 
 Immediately this tells me that EIP-6963's Multi Injected Provider Discovery proposal aims to introduce a different approach or method for **discovering and interacting with EIP-1193 providers (in this case, Ethereum wallet providers) in contrast to the existing method relying on the `window.ethereum` object.
 
-This creates a nice framework for understanding everything to come as we read through the rest of the EIP.
+As a developer with `window.ethereum` littered throughout my dapps, you've got my attention.
+
+This frames everything for me as i continue to read through the EIP.
 
 ## Issues Predating EIP-6963
 
@@ -343,3 +355,6 @@ Docs pages that need to be updates:
 1. Tutorials 1 & 2 on wallet?
     2. We can update these tutorials in order to iincorporate implementing EIP-6963. 
 3. Detect MetaMask should we promote the EIP-6963 method of detecting MM or should we show both?
+
+
+Questions for Jiexi and 

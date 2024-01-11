@@ -12,7 +12,6 @@ interface EIP6963ProviderInfo {
   icon: string;
 }
 
-/* Type EIP1193Provider is documented at EIP-1193 */
 interface EIP1193Provider {
   isStatus?: boolean;
   host?: string;

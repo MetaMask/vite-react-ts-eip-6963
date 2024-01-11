@@ -4,17 +4,15 @@ import { useSyncProviders } from '../hooks/useSyncProviders'
 import { formatAddress } from '~/utils'
 
 export const  DiscoverWalletProviders = () => {
-
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
   const [userAccount, setUserAccount] = useState<string>('')
-
   const providers = useSyncProviders()
   
   const handleConnect = async(providerWithInfo: EIP6963ProviderDetail)=> {
     const accounts = await providerWithInfo.provider
       .request({method:'eth_requestAccounts'})
       .catch(console.error)
-
+      
     if(accounts?.[0]){
       setSelectedWallet(providerWithInfo)
       setUserAccount(accounts?.[0])
@@ -39,7 +37,7 @@ export const  DiscoverWalletProviders = () => {
       </div>
       <hr />
       <h2 className={styles.userAccount}>{ userAccount ? "" : "No " }Wallet Selected</h2>
-      { (userAccount && selectedWallet.provider) &&
+      { userAccount &&
         <div className={styles.walletDetails}>
           <div className={styles.logo}>
             <img src={selectedWallet.info.icon} alt={selectedWallet.info.name} />
