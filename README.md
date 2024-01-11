@@ -6,6 +6,10 @@ GitHub Demo Repo: [vite-react-ts-eip-6963](https://github.com/MetaMask/vite-reac
 
 The Example code repo above will help you create a simple implementation of EIP-6963 for detecting multiple injected providers (browser installed wallets (Externally Owned Accounts)) using ViteJS React + TypeScript.
 
+The crux of what we will be doing is implementing the interfaces outlined in the EIP and listening to `eip6963:announceProvider` events in our dapp and storing the returned providers so they can be used anywhere and at anytime in our dApp giving us the ability to  distinguish between providers.
+
+Here is a preview of what we will build:
+
 ![EIP-6963 React Demo](https://imgur.com/j79GvQ9.gif)
 
 ## The EIP-6963 Abstract
@@ -14,7 +18,7 @@ The Example code repo above will help you create a simple implementation of EIP-
 
 Before trying to understand any EIP, read and fully understand the [abstract](https://eips.ethereum.org/EIPS/eip-6963#abstract) (Quoted above), [motivation](https://eips.ethereum.org/EIPS/eip-6963#motivation), and do a full read through even if there are aspects that you don't understand. 
 
-If you don't understand any part, you can get further information through sites like Ethereum Magicians ([EIP-6963 MIPD](https://ethereum-magicians.org/t/eip-6963-multi-injected-provider-discovery/14076)) where you can get additional context from the authors and community on most EIPs. 
+> Note: If you don't understand any part, you can get further information through sites like Ethereum Magicians ([EIP-6963 MIPD](https://ethereum-magicians.org/t/eip-6963-multi-injected-provider-discovery/14076)) where you can get additional context from the authors and the community on most EIPs. 
 
 It would also be helpful to understand [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193).
 
@@ -22,17 +26,17 @@ IMO, the most important line from the [EIP-6963 abstract](https://eips.ethereum.
 
 **_"An alternative discovery mechanism to `window.ethereum` for EIP-1193 providers"_**
 
-Immediately this tells me that EIP-6963's Multi Injected Provider Discovery proposal aims to introduce a different approach or method for **discovering and interacting with EIP-1193 providers (in this case, Ethereum wallet providers) in contrast to the existing method relying on the `window.ethereum` object.
+Immediately this tells me that EIP-6963's Multi Injected Provider Discovery proposal aims to introduce a different approach or method for **discovering and interacting with EIP-1193 providers (in this case, Ethereum wallet providers)** in contrast to the existing method relying on the `window.ethereum` object.
 
-As a developer with `window.ethereum` littered throughout my dapps, you've got my attention.
+As a developer with `window.ethereum` littered throughout my dapps and the UX issues around that object getting clobbered in a tag you're it kind of way, they have my attention.
 
-This frames everything for me as i continue to read through the EIP.
+Hopefully this info has helped to frame our thining as we progress through the EIP.
 
 ## Issues Predating EIP-6963
 
-In Ethereum decentralized applications (dApps), wallets traditionally expose their APIs using a JavaScript object known as 'the Provider.' The initial EIP created to standardize this interface was [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193), conflicts arose among different wallet implementations. 
+In Ethereum decentralized applications (dApps), wallets traditionally expose their APIs using a JavaScript object known as 'the Provider.' The initial EIP created to standardize this interface was [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193), and conflicts have risen among different wallet implementations.
 
-While EIP-1193 aimed to establish a common convention, the user experience suffered due to race conditions caused by wallets injecting their providers into the browser window (Ethereum Object). In fact, most who criticize Web3 start with UX shortcomings around wallet onboarding and connection.
+While EIP-1193 aimed to establish a common convention, the user experience suffered due to race conditions caused by wallets injecting their providers (clobbering) window's (Ethereum Object). This has been a huge criticism of Web3 UX and it's shortcomings around wallet onboarding and connection.
 
 These race conditions resulted in multiple wallet extensions enabled in the same browser having conflicts, where the last injected provider typically took precedence.
 
