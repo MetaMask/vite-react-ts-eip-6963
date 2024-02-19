@@ -1,3 +1,10 @@
+To run this repo:
+
+1. ensure you have one or more wallet extensions installed in your browser
+2. Run `npm install`
+3. Run `npm run build` (if you make any changes or would like to ensure there are no build errors)
+4. Run `npm run dev` to run the app locally
+
 # A Guide to EIP-6963 for Developers
 
 This article will fast track your understanding of EIP-6963, answer questions about how to implement, and provide example code for those who'd like to skip the chit chat.
@@ -336,30 +343,3 @@ Example code repo: https://github.com/WalletConnect/EIP6963
 
 Twitter Thread: https://twitter.com/boidushya/status/1714389971778552128
 EIP-6963 in MetaMask Extension
-
-
-<END OF ARTICLE EVERYTHING FROM HERE DOWN WILL BE REMOVED BEFORE PUBLISHING...></END>
-
-Blog Post Action Items:
-
-[ ] Collaborate with the team to update technical docs related to the recent rollout of support for EIP-6963. At least, the following docs pages may need to be updated: 
-[ ] Ethereum Provider API (maybe we could add a note to this page on provider discovery)
-[ ] Ethereum Provider API Reference (would be nice to add interactivity here, but not needed) 
-[ ] HowTo Connect to MetaMask Convenience Libraries
-
-
-Actionable items:
-Get to a lower level of detail in our docs. We want our reference documentation updated. 
-Can we create a demo that can connect to multiple wallets and target which one is active or selected to use.
-
-Update any existing tutorials.
-
-We have a developer call coming up. We want to touch briefly on this call and reintroduce MIPs in this call and wallet_revokePermissions in collab with portfolio dapp team.
-
-Docs pages that need to be updates:
-1. Tutorials 1 & 2 on wallet?
-    2. We can update these tutorials in order to iincorporate implementing EIP-6963. 
-3. Detect MetaMask should we promote the EIP-6963 method of detecting MM or should we show both?
-
-
-Questions for Jiexi and 
