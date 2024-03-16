@@ -20,8 +20,3 @@ export const store = {
     return ()=>window.removeEventListener("eip6963:announceProvider", onAnnouncement)
   }
 }
-
-
-"io.metamask"
-"io.metamask.flask"
-"io.metamask.mmi"
