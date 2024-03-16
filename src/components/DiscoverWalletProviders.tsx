@@ -2,26 +2,28 @@ import styles from './DiscoverWalletProviders.module.css';
 import { useEffect, useState } from 'react';
 import { useSyncProviders } from '../hooks/useSyncProviders';
 import { formatAddress } from '~/utils';
-import { useLocalStorage } from './setLocalStore';
 
 export const DiscoverWalletProviders = () => {
- console.log("DiscoverWalletProviders component rendered"); // Debugging log
- const [connectedWallet, setConnectedWallet] = useLocalStorage<EIP6963ProviderInfo | null>('connectedWallet', null);
+
  const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderInfo>();
  const [userAccount, setUserAccount] = useState<string>('');
  const providers = useSyncProviders();
 
- console.log("Providers fetched", providers); // Debugging log
-
  // If a connected wallet is found in local storage, set it as the selected wallet
  useEffect(() => {
-    if (connectedWallet) {
-      setSelectedWallet(connectedWallet);
+  // Function to fetch data from localStorage
+  const fetchDataFromLocalStorage = () => {
+    const localStorageData = localStorage.getItem('connectedWallet');
+    if (localStorageData) {
+      setSelectedWallet(JSON.parse(localStorageData));
     }
- }, [connectedWallet]);
+  };
+
+  // Call the function to fetch data from localStorage
+  fetchDataFromLocalStorage();
+}, []);
 
  const handleConnect = async (providerWithInfo: EIP6963ProviderDetail, providerInfo: EIP6963ProviderInfo) => {
-    console.log("Attempting to connect to provider:", providerInfo.rdns); // Debugging log
     try {
       const accounts = await providerWithInfo.provider
         .request({ method: 'eth_requestAccounts' })
@@ -30,13 +32,10 @@ export const DiscoverWalletProviders = () => {
           throw error; // Rethrow the error to ensure it's caught by the catch block
         });
 
-      console.log("Accounts fetched:", accounts); // Debugging log for successful account fetch
-
       if (accounts?.[0]) {
-        console.log("Setting selected wallet and user account:", providerInfo, accounts[0]); // Debugging log
         setSelectedWallet(providerInfo);
         setUserAccount(accounts[0]);
-        setConnectedWallet(providerInfo);
+        localStorage.setItem('connectedWallet', JSON.stringify(providerInfo));
       } else {
         console.log("No accounts returned from provider."); // Debugging log for no accounts
       }
@@ -66,7 +65,7 @@ export const DiscoverWalletProviders = () => {
       <hr />
 
       <h2 className={styles.userAccount}>{userAccount ? "" : "No "}Wallet Selected</h2>
-      {userAccount && selectedWallet && (
+      {selectedWallet && (
         <div className={styles.walletDetails}>
           <div className={styles.logo}>
             <img src={selectedWallet.icon} alt={selectedWallet.name} />
