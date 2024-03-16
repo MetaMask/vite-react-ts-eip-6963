@@ -1,17 +1,5 @@
 /// <reference types="vite/client" />
 
-interface EIP6963ProviderDetail {
-  info: EIP6963ProviderInfo;
-  provider: EIP1193Provider;
-}
-
-interface EIP6963ProviderInfo {
-  walletId: string;
-  uuid: string;
-  name: string;
-  icon: string;
-}
-
 interface EIP1193Provider {
   isStatus?: boolean;
   host?: string;
@@ -21,9 +9,22 @@ interface EIP1193Provider {
   request: (request: { method: string, params?: Array<unknown> }) => Promise<unknown>
 }
 
+
+interface EIP6963ProviderInfo {
+  rdns: string;
+  uuid: string;
+  name: string;
+  icon: string;
+}
+
+interface EIP6963ProviderDetail {
+  info: EIP6963ProviderInfo;
+  provider: EIP1193Provider;
+}
+
 type EIP6963AnnounceProviderEvent = {
   detail:{
     info: EIP6963ProviderInfo,
-    provider: EIP1193Provider
+    provider: Readonly<EIP1193Provider>
   }
 }

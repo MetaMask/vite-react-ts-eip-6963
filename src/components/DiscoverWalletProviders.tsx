@@ -15,6 +15,7 @@ export const DiscoverWalletProviders = () => {
  const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
     console.log("handleConnect called with provider", providerWithInfo); // Debugging log
 
+<<<<<<< HEAD
     const accounts = await providerWithInfo.provider
       .request({ method: 'eth_requestAccounts' })
       .catch(console.error);
@@ -25,6 +26,24 @@ export const DiscoverWalletProviders = () => {
       setSelectedWallet(providerWithInfo);
       setUserAccount(accounts[0]);
       console.log("Wallet selected and user account set", providerWithInfo, accounts[0]); // Debugging log
+=======
+export const  DiscoverWalletProviders = () => {
+  const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
+  const [userAccount, setUserAccount] = useState<string>('')
+  const providers = useSyncProviders()
+
+  console.log('providers', providers)
+  
+  const handleConnect = async(providerWithInfo: EIP6963ProviderDetail) => {
+    console.log('providerWithInfo', providerWithInfo)
+    const accounts = await providerWithInfo.provider
+      .request({method:'eth_requestAccounts'})
+      .catch(console.error)
+      
+    if(accounts?.[0]) {
+      setSelectedWallet(providerWithInfo)
+      setUserAccount(accounts?.[0])
+>>>>>>> origin/main
     }
  };
 
@@ -55,6 +74,8 @@ export const DiscoverWalletProviders = () => {
             <img src={selectedWallet.info.icon} alt={selectedWallet.info.name} />
             <div>{selectedWallet.info.name}</div>
             <div>({formatAddress(userAccount)})</div>
+            <div><strong>uuid:</strong> {selectedWallet.info.uuid}</div>
+            <div><strong>rdns:</strong> {selectedWallet.info.rdns}</div>
           </div>
         </div>
       )}
