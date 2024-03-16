@@ -8,16 +8,18 @@ import { useLocalStorage } from './setLocalStore';
 
 export const DiscoverWalletProviders = () => {
   console.log("DiscoverWalletProviders component rendered"); // Debugging log
-  const [connectedWallet, setConnectedWallet] = useLocalStorage<EIP6963ProviderDetail | null> ( null);
+  const [connectedWallet, setConnectedWallet] = useLocalStorage<EIP6963ProviderDetail | null> ('connectedWallet', null);
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>();
   const [userAccount, setUserAccount] = useState<string>('');
   const providers = useSyncProviders();
 
   console.log("Providers fetched", providers); // Debugging log
 
+  // If a connected wallet is found in local storage, set it as the selected wallet
+  setSelectedWallet(connectedWallet);
+
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
     console.log("Attempting to connect to provider:", providerWithInfo.info.rdns); // Debugging log
-   setConnectedWallet(providerWithInfo)
     try {
        const accounts = await providerWithInfo.provider
          .request({ method: 'eth_requestAccounts' })
@@ -31,6 +33,7 @@ export const DiscoverWalletProviders = () => {
        if (accounts?.[0]) {
          console.log("Setting selected wallet and user account:", providerWithInfo, accounts[0]); // Debugging log
          setSelectedWallet(providerWithInfo);
+         setConnectedWallet(providerWithInfo);
          setUserAccount(accounts[0]);
        } else {
          console.log("No accounts returned from provider."); // Debugging log for no accounts
