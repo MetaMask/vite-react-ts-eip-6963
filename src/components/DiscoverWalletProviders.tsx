@@ -5,7 +5,7 @@ import { formatAddress } from '~/utils';
 
 export const DiscoverWalletProviders = () => {
 
- const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderInfo>();
+ const [selectedWallet, setSelectedWallet] = useState<unknown>();
  const [userAccount, setUserAccount] = useState<string>('');
  const providers = useSyncProviders();
 
@@ -33,9 +33,11 @@ export const DiscoverWalletProviders = () => {
         });
 
       if (accounts?.[0]) {
-        setSelectedWallet(providerInfo);
+        const accountString = accounts[0]
+        const extendedProviderInfo = { ...providerInfo, accountString };
+        setSelectedWallet(extendedProviderInfo);
         setUserAccount(accounts[0]);
-        localStorage.setItem('connectedWallet', JSON.stringify(providerInfo));
+        localStorage.setItem('connectedWallet', JSON.stringify(extendedProviderInfo));
       } else {
         console.log("No accounts returned from provider."); // Debugging log for no accounts
       }
@@ -70,7 +72,7 @@ export const DiscoverWalletProviders = () => {
           <div className={styles.logo}>
             <img src={selectedWallet.icon} alt={selectedWallet.name} />
             <div>{selectedWallet.name}</div>
-            <div>({formatAddress(userAccount)})</div>
+            <div>{userAccount ? formatAddress(userAccount) : selectedWallet?.accountString}</div>
             <div><strong>uuid:</strong> {selectedWallet.uuid}</div>
             <div><strong>rdns:</strong> {selectedWallet.rdns}</div>
           </div>
