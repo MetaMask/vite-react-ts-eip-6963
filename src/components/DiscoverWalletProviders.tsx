@@ -2,10 +2,13 @@ import styles from './DiscoverWalletProviders.module.css';
 import { useState } from 'react';
 import { useSyncProviders } from '../hooks/useSyncProviders';
 import { formatAddress } from '~/utils';
+import { useLocalStorage } from './setLocalStore';
+
+
 
 export const DiscoverWalletProviders = () => {
   console.log("DiscoverWalletProviders component rendered"); // Debugging log
-
+  const [connectedWallet, setConnectedWallet] = useLocalStorage<EIP6963ProviderDetail | null> ( null);
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>();
   const [userAccount, setUserAccount] = useState<string>('');
   const providers = useSyncProviders();
@@ -14,7 +17,7 @@ export const DiscoverWalletProviders = () => {
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
     console.log("Attempting to connect to provider:", providerWithInfo.info.rdns); // Debugging log
-   
+   setConnectedWallet(providerWithInfo)
     try {
        const accounts = await providerWithInfo.provider
          .request({ method: 'eth_requestAccounts' })
