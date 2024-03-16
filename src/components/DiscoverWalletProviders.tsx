@@ -13,20 +13,30 @@ export const DiscoverWalletProviders = () => {
   console.log("Providers fetched", providers); // Debugging log
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
-    console.log("handleConnect called with provider", providerWithInfo); // Debugging log
-
-    const accounts = await providerWithInfo.provider
-      .request({ method: 'eth_requestAccounts' })
-      .catch(console.error);
-
-    console.log("Accounts fetched", accounts); // Debugging log
-
-    if (accounts?.[0]) {
-      setSelectedWallet(providerWithInfo);
-      setUserAccount(accounts[0]);
-      console.log("Wallet selected and user account set", providerWithInfo, accounts[0]); // Debugging log
+    console.log("Attempting to connect to provider:", providerWithInfo.info.rdns); // Debugging log
+   
+    try {
+       const accounts = await providerWithInfo.provider
+         .request({ method: 'eth_requestAccounts' })
+         .catch(error => {
+           console.error("Error requesting accounts:", error); // Debugging log for errors
+           throw error; // Rethrow the error to ensure it's caught by the catch block
+         });
+   
+       console.log("Accounts fetched:", accounts); // Debugging log for successful account fetch
+   
+       if (accounts?.[0]) {
+         console.log("Setting selected wallet and user account:", providerWithInfo, accounts[0]); // Debugging log
+         setSelectedWallet(providerWithInfo);
+         setUserAccount(accounts[0]);
+       } else {
+         console.log("No accounts returned from provider."); // Debugging log for no accounts
+       }
+    } catch (error) {
+       console.error("Failed to connect to provider:", error); // Debugging log for connection failure
     }
-  };
+   };
+   
 
   return (
     <>
