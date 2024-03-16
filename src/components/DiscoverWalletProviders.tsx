@@ -7,13 +7,16 @@ export const  DiscoverWalletProviders = () => {
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
   const [userAccount, setUserAccount] = useState<string>('')
   const providers = useSyncProviders()
+
+  console.log('providers', providers)
   
-  const handleConnect = async(providerWithInfo: EIP6963ProviderDetail)=> {
+  const handleConnect = async(providerWithInfo: EIP6963ProviderDetail) => {
+    console.log('providerWithInfo', providerWithInfo)
     const accounts = await providerWithInfo.provider
       .request({method:'eth_requestAccounts'})
       .catch(console.error)
       
-    if(accounts?.[0]){
+    if(accounts?.[0]) {
       setSelectedWallet(providerWithInfo)
       setUserAccount(accounts?.[0])
     }
@@ -43,6 +46,8 @@ export const  DiscoverWalletProviders = () => {
             <img src={selectedWallet.info.icon} alt={selectedWallet.info.name} />
             <div>{selectedWallet.info.name}</div>
             <div>({formatAddress(userAccount)})</div>
+            <div><strong>uuid:</strong> {selectedWallet.info.uuid}</div>
+            <div><strong>rdns:</strong> {selectedWallet.info.rdns}</div>
           </div>
         </div>
       }

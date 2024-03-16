@@ -28,17 +28,17 @@ IMO, the most important line from the [EIP-6963 abstract](https://eips.ethereum.
 
 Immediately this tells me that EIP-6963's Multi Injected Provider Discovery proposal aims to introduce a different approach or method for **discovering and interacting with EIP-1193 providers (in this case, Ethereum wallet providers)** in contrast to the existing method relying on the `window.ethereum` object.
 
-As a developer with `window.ethereum` littered throughout my dapps and the UX issues around that object getting clobbered in a tag you're it kind of way, they have my attention.
+As a developer with `window.ethereum` littered throughout my dapps and the UX issues that come with the older approach, they have my attention.
 
-Hopefully this info has helped to frame our thining as we progress through the EIP.
+Hopefully this info has helped us to frame our thinking as we progress through the EIP and start to implement this much better way of detecting and connecting to wallets.
 
 ## Issues Predating EIP-6963
 
-In Ethereum decentralized applications (dApps), wallets traditionally expose their APIs using a JavaScript object known as 'the Provider.' The initial EIP created to standardize this interface was [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193), and conflicts have risen among different wallet implementations.
+In Ethereum decentralized applications (dApps), wallets traditionally expose their APIs using a JavaScript object known as 'the Provider.' The initial EIP created to standardize this interface was EIP-1193, and conflicts have risen among different wallet implementations. While EIP-1193 aimed to establish a common convention, the user experience suffered due to race conditions caused by wallets injecting their providers (clobbering) window's (Ethereum Object). This has been a huge criticism of Web3 UX and its shortcomings around wallet onboarding and connection. These race conditions resulted in multiple wallet extensions enabled in the same browser having conflicts, where the last injected provider typically took precedence.
 
-While EIP-1193 aimed to establish a common convention, the user experience suffered due to race conditions caused by wallets injecting their providers (clobbering) window's (Ethereum Object). This has been a huge criticism of Web3 UX and it's shortcomings around wallet onboarding and connection.
+Before EIP-6963, we had an unofficial standard through EIP-1193. Before it, a common convention in Ethereum dApps was for wallets to expose their API via a JavaScript object in the web page called 'the Provider.' Historically, Provider implementations had exhibited conflicting interfaces and behaviors between wallets. EIP-1193 formalized an Ethereum Provider API to promote wallet interoperability. The API was designed to be minimal, event-driven, and agnostic of transport and RPC protocols, and easily extended by defining new RPC methods and message event types. Although it provided a common convention for wallets to expose their API, user experience still suffered as a wallet would inject its provider into your browser window (Ethereum Object), causing race conditions. Having multiple wallet extensions installed meant that the last one to inject its provider typically was the one that would be detected and available for use.
 
-These race conditions resulted in multiple wallet extensions enabled in the same browser having conflicts, where the last injected provider typically took precedence.
+EIP-5749 attempted to solve this issue with a window.evmprovider solution, and was a step in the right direction but ultimately was not adopted by enough wallets to solve our UX issue. This is where we end up with EIP 6963 bringing a standard to propose a way of doing Multi Injected Provider Discovery.
 
 ## What you need to know
 
@@ -272,7 +272,7 @@ I believe the SDK, which also supports EIP-6963, will be integrated into Web3Onb
 WalletConnect supports it via Web3Modal
 Not sure about Web3 React, but looks like we’re trying to integrate the SDK there as well.
 
-### MetaMask SDK
+### The MetaMask SDK
 
 The MetaMask SDK not only supports EIP-6963 on it's own for detecting MetaMask, but is also being integrated into Web3 Onboard (alpha) and WAGMI (coming soon)
 
@@ -316,50 +316,13 @@ Read more about [EIP-6963 backwards compatibility](https://eips.ethereum.org/EIP
 [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963)
 [EIP-6963 Standardizes Your Browser Wallet Experience](https://www.youtube.com/watch?v=SWmknCUwr3Y&t=281s)
 
-## A History of Injected Provider (Where does this section go??)
-
-Before EIP 6963 we have had an unofficial standard through EIP-1193, 
-
-Before it, a common convention in the Ethereum dApps was for wallets to expose their API via a JavaScript object in the web page called “the Provider”. Historically, Provider implementations had exhibited conflicting interfaces and behaviors between wallets. EIP-1193 formalized an Ethereum Provider API to promote wallet interoperability. The API was designed to be minimal, event-driven, and agnostic of transport and RPC protocols, and easily extended by defining new RPC methods and message event types.
-
-Although it provided a common convention for wallets to expose their API, user experience still suffered as a wallet would inject its provider into your browser window (Ethereum Object) but it was still causing race conditions and having multiple wallet extensions installed meant that the last one to inject it’s provider typically was the one that would be detected and available for use.
-
-EIP-5749 attempted to solve this issue with a `window.evmprovider` solution, and was a step in the right direction but ultimately was not adopted by enough wallets to solve our UX issue.
-
-This is where we end up with EIP 6963 bringing a standard to propose a way of doing Multi Injected Provider Discovery. 
-
-Demos and Information:
+### Additional Demos and Information
 
 WalletConnect has already done something like this, although it's not a tutorial, it's a Twitter thread and example code repo and demo:
 https://eip6963.org/
-Example code repo: https://github.com/WalletConnect/EIP6963
+
+NextJS example repo: https://github.com/WalletConnect/EIP6963
 
 Twitter Thread: https://twitter.com/boidushya/status/1714389971778552128
-EIP-6963 in MetaMask Extension
 
-
-<END OF ARTICLE EVERYTHING FROM HERE DOWN WILL BE REMOVED BEFORE PUBLISHING...></END>
-
-Blog Post Action Items:
-
-[ ] Collaborate with the team to update technical docs related to the recent rollout of support for EIP-6963. At least, the following docs pages may need to be updated: 
-[ ] Ethereum Provider API (maybe we could add a note to this page on provider discovery)
-[ ] Ethereum Provider API Reference (would be nice to add interactivity here, but not needed) 
-[ ] HowTo Connect to MetaMask Convenience Libraries
-
-
-Actionable items:
-Get to a lower level of detail in our docs. We want our reference documentation updated. 
-Can we create a demo that can connect to multiple wallets and target which one is active or selected to use.
-
-Update any existing tutorials.
-
-We have a developer call coming up. We want to touch briefly on this call and reintroduce MIPs in this call and wallet_revokePermissions in collab with portfolio dapp team.
-
-Docs pages that need to be updates:
-1. Tutorials 1 & 2 on wallet?
-    2. We can update these tutorials in order to iincorporate implementing EIP-6963. 
-3. Detect MetaMask should we promote the EIP-6963 method of detecting MM or should we show both?
-
-
-Questions for Jiexi and 
+replace window.ethereum with provider explain what provider means.

@@ -7,7 +7,7 @@ declare global{
 let providers: EIP6963ProviderDetail[] = []
 
 export const store = {
-  value: ()=>providers,
+  value: ()=> providers,
   subscribe: (callback: ()=>void)=>{
     function onAnnouncement(event: EIP6963AnnounceProviderEvent){
       if(providers.map(p => p.info.uuid).includes(event.detail.info.uuid)) return
@@ -20,3 +20,8 @@ export const store = {
     return ()=>window.removeEventListener("eip6963:announceProvider", onAnnouncement)
   }
 }
+
+
+"io.metamask"
+"io.metamask.flask"
+"io.metamask.mmi"
