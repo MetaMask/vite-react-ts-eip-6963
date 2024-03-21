@@ -5,9 +5,11 @@ import { formatAddress } from '~/utils';
 
 export const DiscoverWalletProviders = () => {
 
- const [selectedWallet, setSelectedWallet] = useState<unknown>();
+ const [selectedWallet, setSelectedWallet] = useState<WalletSelected>();
  const [userAccount, setUserAccount] = useState<string>('');
  const providers = useSyncProviders();
+
+ console.log(providers)
 
  // If a connected wallet is found in local storage, set it as the selected wallet
  useEffect(() => {

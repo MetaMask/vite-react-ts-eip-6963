@@ -17,6 +17,10 @@ interface EIP6963ProviderInfo {
   icon: string;
 }
 
+interface WalletSelected extends EIP6963ProviderInfo {
+  accountString: string;
+}
+
 interface EIP6963ProviderDetail {
   info: EIP6963ProviderInfo;
   provider: EIP1193Provider;
