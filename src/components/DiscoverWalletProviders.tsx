@@ -12,13 +12,17 @@ export const  DiscoverWalletProviders = () => {
   
   const handleConnect = async(providerWithInfo: EIP6963ProviderDetail) => {
     console.log('providerWithInfo', providerWithInfo)
-    const accounts = await providerWithInfo.provider
-      .request({method:'eth_requestAccounts'})
-      .catch(console.error)
-      
-    if(accounts?.[0]) {
-      setSelectedWallet(providerWithInfo)
-      setUserAccount(accounts?.[0])
+
+    try {
+      const accounts = await providerWithInfo.provider
+          .request({method:'eth_requestAccounts'})
+
+      if(accounts?.[0]) {
+        setSelectedWallet(providerWithInfo)
+        setUserAccount(accounts?.[0])
+      }
+    } catch (error) {
+      console.error("Failed to connect to provider:", error);
     }
   }
  
