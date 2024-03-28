@@ -145,7 +145,7 @@ We can then create a `hooks` directory and add the two following files:
 
 ### useSyncProviders.tsx
 
-```ts=
+```ts
 import { useSyncExternalStore } from "react";
 import { store } from "./store";
 
@@ -154,7 +154,7 @@ export const useSyncProviders = ()=> useSyncExternalStore(store.subscribe, store
 
 ### store.tsx
 
-```ts=
+```ts
 declare global{
   interface WindowEventMap {
     "eip6963:announceProvider": CustomEvent
@@ -183,9 +183,9 @@ With this hook and store in place, we can now create a basic compnentat the foll
 
 ### DiscoverWalletProviders.tsx
 
-```ts=
+```ts
 import { useState } from 'react'
-import { useSyncProviders } from '../hooks/useSyncProviders'
+import { useSyncProviders } from '~/hooks/useSyncProviders'
 import { formatAddress } from '~/utils'
 
 export const  DiscoverWalletProviders = () => {
@@ -242,9 +242,9 @@ Finally we can link to this coomponent from `src/App.tsx`
 
 ### App.tsx
 
-```ts=
+```ts
 import './App.css'
-import { DiscoverWalletProviders } from './components/DiscoverWalletProviders'
+import { DiscoverWalletProviders } from '~/components/DiscoverWalletProviders'
 
 function App() {
 
