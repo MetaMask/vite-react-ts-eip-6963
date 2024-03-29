@@ -1,38 +1,18 @@
-import styles from './DiscoverWalletProviders.module.css'
-import { useState } from 'react'
-import { useSyncProviders } from '../hooks/useSyncProviders'
+import { useEip6963Provider } from '~/hooks/Eip6963Provider'
 import { formatAddress } from '~/utils'
+import styles from './DiscoverWalletProviders.module.css'
 
 export const  DiscoverWalletProviders = () => {
-  const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
-  const [userAccount, setUserAccount] = useState<string>('')
-  const providers = useSyncProviders()
-
-  console.log('providers', providers)
-  
-  const handleConnect = async(providerWithInfo: EIP6963ProviderDetail) => {
-    console.log('providerWithInfo', providerWithInfo)
-
-    try {
-      const accounts = await providerWithInfo.provider
-          .request({method:'eth_requestAccounts'})
-
-      if(accounts?.[0]) {
-        setSelectedWallet(providerWithInfo)
-        setUserAccount(accounts?.[0])
-      }
-    } catch (error) {
-      console.error("Failed to connect to provider:", error);
-    }
-  }
  
+  const {wallets, selectedWallet, selectedAccount, connectWallet} = useEip6963Provider();
+
   return (
     <>
       <h2>Wallets Detected:</h2>
       <div className={styles.display}>
         {
-          providers.length > 0 ? providers?.map((provider: EIP6963ProviderDetail)=>(
-            <button key={provider.info.uuid} onClick={()=>handleConnect(provider)} >
+          Object.keys(wallets).length > 0 ? Object.values(wallets).map((provider: EIP6963ProviderDetail)=>(
+            <button key={provider.info.uuid} onClick={()=>connectWallet(provider.info.uuid)}>
               <img src={provider.info.icon} alt={provider.info.name} />
               <div>{provider.info.name}</div>
             </button>
@@ -43,13 +23,13 @@ export const  DiscoverWalletProviders = () => {
         }
       </div>
       <hr />
-      <h2 className={styles.userAccount}>{ userAccount ? "" : "No " }Wallet Selected</h2>
-      { userAccount &&
+      <h2 className={styles.userAccount}>{ selectedAccount ? "" : "No " }Wallet Selected</h2>
+      { selectedAccount &&
         <div className={styles.walletDetails}>
           <div className={styles.logo}>
             <img src={selectedWallet.info.icon} alt={selectedWallet.info.name} />
             <div>{selectedWallet.info.name}</div>
-            <div>({formatAddress(userAccount)})</div>
+            <div>({formatAddress(selectedAccount)})</div>
             <div><strong>uuid:</strong> {selectedWallet.info.uuid}</div>
             <div><strong>rdns:</strong> {selectedWallet.info.rdns}</div>
           </div>
