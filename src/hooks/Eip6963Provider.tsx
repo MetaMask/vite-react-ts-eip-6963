@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useCallback, useContext, useEffect, useState } from "react";
+import { PropsWithChildren, createContext, useCallback, useEffect, useState } from "react";
 
 type SelectedAccountByWallet = Record<string, string | null>;
 
@@ -15,7 +15,7 @@ declare global{
   }
 }
 
-const Eip6963ProviderContext = createContext<Eip6963ProviderContext>(null);
+export const Eip6963ProviderContext = createContext<Eip6963ProviderContext>(null);
 
 export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
   const [wallets, setWallets] = useState<Record<string, EIP6963ProviderDetail>>({});
@@ -67,5 +67,3 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
     </Eip6963ProviderContext.Provider>
   )
 };
-
-export const useEip6963Provider = () => useContext(Eip6963ProviderContext);

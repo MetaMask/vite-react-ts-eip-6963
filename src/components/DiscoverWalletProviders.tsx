@@ -1,10 +1,10 @@
-import { useEip6963Provider } from '~/hooks/Eip6963Provider'
+import { useEip6963Provider } from '~/hooks/useEip6963Provider'
 import { formatAddress } from '~/utils'
 import styles from './DiscoverWalletProviders.module.css'
 
 export const  DiscoverWalletProviders = () => {
  
-  const {wallets, selectedWallet, selectedAccount, connectWallet} = useEip6963Provider();
+  const { wallets, selectedWallet, selectedAccount, connectWallet } = useEip6963Provider();
 
   return (
     <>
