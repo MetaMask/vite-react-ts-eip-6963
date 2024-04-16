@@ -1,4 +1,5 @@
 # Current State of UX in Web3
+
 The user experience in Web3 has historically lagged behind that of traditional web apps, primarily due to the complexity and novelty of blockchain technologies. 
 
 We need to remind ourselves that the full picture of Web3 is still unclear. The technology is growing, but it's not fully there yet. Those that are helping us build the future of Web3 through libraries and frameworks and those building dApps have a huge role in ensuring that the tools and applications we build are accessible, usable, and solve a problem for those utilizing the technology.
@@ -13,6 +14,7 @@ Common issues include:
 - UI/UX Technology Concerns: Outside of the technology that exists for Web2, the primitives, libraries, and frameworks are still being developed and are in their early stages.
 
 ## How EIP-6963 Moves the Goalposts
+
 EIP-6963 represents an attempt to standardize the way wallet providers are detected and interacted with, which could have several positive implications for UX in Web3:
 
 - Simplified Integration: By providing a standardized way to announce and detect wallet providers, developers can more easily integrate multiple wallets into their applications, reducing the effort and potential errors involved in supporting a diverse wallet ecosystem.
