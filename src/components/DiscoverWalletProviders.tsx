@@ -2,6 +2,11 @@ import { useEip6963Provider } from '~/hooks/useEip6963Provider'
 import { formatAddress } from '~/utils'
 import styles from './DiscoverWalletProviders.module.css'
 
+/*
+  This component is structured to display wallet providers that have announced themselves and allow the user 
+  It connects to these providers. It also provides information about the currently selected wallet and account. 
+*/
+
 export const  DiscoverWalletProviders = () => {
  
   const { wallets, selectedWallet, selectedAccount, connectWallet } = useEip6963Provider();
