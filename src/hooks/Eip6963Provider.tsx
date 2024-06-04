@@ -10,8 +10,8 @@ interface Eip6963ProviderContext {
   wallets: Record<string, EIP6963ProviderDetail>         // Record of wallets by UUID
   selectedWallet: EIP6963ProviderDetail | null           // Currently selected wallet
   selectedAccount: string | null                         // Account address of selected wallet
-  connectWallet: (walletUuid: string) => Promise<void>  // Function to trigger wallet connection
-  disconnectWallet: () => void                          // Function to trigger wallet disconnection
+  connectWallet: (walletUuid: string) => Promise<void>   // Function to trigger wallet connection
+  disconnectWallet: () => void                           // Function to trigger wallet disconnection
 }
 
 /*
@@ -112,18 +112,29 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
   }, [wallets, selectedAccountByWalletRdns])
 
 
-  const disconnectWallet = useCallback(() => {
+  const disconnectWallet = useCallback(async () => {
     if (selectedWalletRdns) {
       setSelectedAccountByWalletRdns((currentAccounts) => ({
         ...currentAccounts,
         [selectedWalletRdns]: null,
       }))
+      const wallet = wallets[selectedWalletRdns];
       setSelectedWalletRdns(null)
 
       // Clear state from local storage
       localStorage.removeItem('selectedWalletRdns')
+
+      // Revoke permissions
+      try {
+        await wallet.provider.request({
+          method: "wallet_revokePermissions",
+          params: [{ "eth_accounts": {} }]
+        });
+      } catch (error) {
+        console.error("Failed to revoke permissions:", error);
+      }
     }
-  }, [selectedWalletRdns])
+  }, [selectedWalletRdns, wallets])
 
 
   /*
