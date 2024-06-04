@@ -1,9 +1,3 @@
-.display {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .logo {
   display: flex;
   flex-flow: row nowrap;

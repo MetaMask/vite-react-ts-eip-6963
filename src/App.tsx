@@ -1,12 +1,13 @@
 import './App.css'
-import { DiscoverWalletProviders } from '~/components/DiscoverWalletProviders'
 import { Eip6963Provider } from '~/hooks/Eip6963Provider'
+import { SelectedWallet } from './components/SelectedWallet'
+import { WalletList } from './components/WalletList'
 
 function App() {
-
   return (
     <Eip6963Provider>
-      <DiscoverWalletProviders/>
+      <WalletList />
+      <SelectedWallet />
     </Eip6963Provider>
   )
 }
