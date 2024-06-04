@@ -1,15 +1,17 @@
-import { PropsWithChildren, createContext, useCallback, useEffect, useState } from "react";
+import { PropsWithChildren, createContext, useCallback, useEffect, useState } from "react"
 
 // A React component leveraging React `context` to manage state and interaction with EIP-6963 compliant wallets.
 
-type SelectedAccountByWallet = Record<string, string | null>;
+// <rdns => account address>
+type SelectedAccountByWallet = Record<string, string | null>
 
 // Defines the shape of the context
 interface Eip6963ProviderContext {
-  wallets: Record<string, EIP6963ProviderDetail>;        // Record of wallets by UUID
-  selectedWallet: EIP6963ProviderDetail | null;          // Currently selected wallet
-  selectedAccount: string | null;                        // Account address of selected wallet
-  connectWallet: (walletUuid: string) => Promise<void>;  // Function to trigger wallet connection
+  wallets: Record<string, EIP6963ProviderDetail>         // Record of wallets by UUID
+  selectedWallet: EIP6963ProviderDetail | null           // Currently selected wallet
+  selectedAccount: string | null                         // Account address of selected wallet
+  connectWallet: (walletUuid: string) => Promise<void>  // Function to trigger wallet connection
+  disconnectWallet: () => void                          // Function to trigger wallet disconnection
 }
 
 /*
@@ -22,14 +24,16 @@ declare global{
   }
 }
 
-export const Eip6963ProviderContext = createContext<Eip6963ProviderContext>(null);
+export const Eip6963ProviderContext = createContext<Eip6963ProviderContext>(null)
 
 export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [wallets, setWallets] = useState<Record<string, EIP6963ProviderDetail>>({}); // State to hold all detected wallets
+  // State to hold all detected wallets
+  const [wallets, setWallets] = useState<Record<string, EIP6963ProviderDetail>>({})
   
-  // States to keep track of the "currently selected wallet" and the "account address" selected within each wallet
-  const [selectedWalletUuid, setSelectedWalletUuid] = useState<string | null>(null);
-  const [selectedAccountByWalletUuid, setSelectedAccountByWalletUuid] = useState<SelectedAccountByWallet>({});
+  // state of current selected wallet's rdns
+  const [selectedWalletRdns, setSelectedWalletRdns] = useState<string | null>(null)
+  // state of current selected account by wallet's rdns
+  const [selectedAccountByWalletRdns, setSelectedAccountByWalletRdns] = useState<SelectedAccountByWallet>({})
 
   /* 
     This useEffect handles side effects related to setting up and tearing down event listeners for wallet announcements.
@@ -42,18 +46,36 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
     - Dispatches an "eip6963:requestProvider" event to request wallet providers to announce themselves.
   */
   useEffect(() => {
+    /* NEW: Load state from local storage */
+    const savedSelectedWalletRdns = localStorage.getItem('selectedWalletRdns')
+    // console.log('saved', savedSelectedWalletRdns)
+    const savedSelectedAccountByWalletRdns = localStorage.getItem('selectedAccountByWalletRdns')
+
+    // restore the map of selected accounts by wallet
+    // json parse because because localstorage always needs a string
+    if (savedSelectedAccountByWalletRdns) {
+      setSelectedAccountByWalletRdns(JSON.parse(savedSelectedAccountByWalletRdns))
+    }
+
     function onAnnouncement(event: EIP6963AnnounceProviderEvent){
       setWallets(currentWallets => ({
         ...currentWallets,
-        [event.detail.info.uuid]: event.detail
-      }));
+        [event.detail.info.rdns]: event.detail
+      }))
+
+      // console.log('received', event.detail.info.rdns, savedSelectedWalletRdns)
+
+      // only restore the saved wallet when it is announced
+      if (savedSelectedWalletRdns && event.detail.info.rdns === savedSelectedWalletRdns) {
+        setSelectedWalletRdns(savedSelectedWalletRdns)
+      }
     }
 
-    window.addEventListener("eip6963:announceProvider", onAnnouncement);
-    window.dispatchEvent(new Event("eip6963:requestProvider"));
+    window.addEventListener("eip6963:announceProvider", onAnnouncement)
+    window.dispatchEvent(new Event("eip6963:requestProvider"))
     
     return () => window.removeEventListener("eip6963:announceProvider", onAnnouncement)
-  }, []);
+  }, [])
 
 
   /*
@@ -65,22 +87,43 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
     Requests account access ('eth_requestAccounts') from the wallet's provider.
     Updates the state with the selected wallet `uuid` and the first account returned by the provider.
   */
-  const connectWallet = useCallback(async (walletUuid: string) => {
+  const connectWallet = useCallback(async (walletRdns: string) => {
     try {
-      const wallet = wallets[walletUuid];
-      const accounts = await wallet.provider.request({method:'eth_requestAccounts'}) as string[];
+      const wallet = wallets[walletRdns]
+      const accounts = await wallet.provider.request({method:'eth_requestAccounts'}) as string[]
 
       if(accounts?.[0]) {
-        setSelectedWalletUuid(wallet.info.uuid);
-        setSelectedAccountByWalletUuid((currentAccounts) => ({
+        setSelectedWalletRdns(wallet.info.rdns)
+        setSelectedAccountByWalletRdns((currentAccounts) => ({
           ...currentAccounts,
-          [wallet.info.uuid]: accounts[0],
-        }));
+          [wallet.info.rdns]: accounts[0],
+        }))
+        
+        // Save state to local storage for persistence
+        localStorage.setItem('selectedWalletRdns', wallet.info.rdns)
+        localStorage.setItem('selectedAccountByWalletRdns', JSON.stringify({
+          ...selectedAccountByWalletRdns,
+          [wallet.info.rdns]: accounts[0],
+        }))
       }
     } catch (error) {
-      console.error("Failed to connect to provider:", error);
+      console.error("Failed to connect to provider:", error)
     }
-  }, [wallets]);
+  }, [wallets, selectedAccountByWalletRdns])
+
+
+  const disconnectWallet = useCallback(() => {
+    if (selectedWalletRdns) {
+      setSelectedAccountByWalletRdns((currentAccounts) => ({
+        ...currentAccounts,
+        [selectedWalletRdns]: null,
+      }))
+      setSelectedWalletRdns(null)
+
+      // Clear state from local storage
+      localStorage.removeItem('selectedWalletRdns')
+    }
+  }, [selectedWalletRdns])
 
 
   /*
@@ -93,9 +136,10 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
   */
   const contextValue: Eip6963ProviderContext = {
     wallets,
-    selectedWallet: selectedWalletUuid === null ? null : wallets[selectedWalletUuid],
-    selectedAccount: selectedWalletUuid === null ? null : selectedAccountByWalletUuid[selectedWalletUuid],
+    selectedWallet: selectedWalletRdns === null ? null : wallets[selectedWalletRdns],
+    selectedAccount: selectedWalletRdns === null ? null : selectedAccountByWalletRdns[selectedWalletRdns],
     connectWallet,
+    disconnectWallet
   }
 
   return (
@@ -103,7 +147,7 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
       {children}
     </Eip6963ProviderContext.Provider>
   )
-};
+}
 
 /*
   Considerations (What else can we do?)
