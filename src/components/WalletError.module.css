@@ -1,0 +1,9 @@
+.mmError {
+  height: 36px;
+  padding: 16px;
+  color: #EFEFEF;
+  background-color: transparent;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}

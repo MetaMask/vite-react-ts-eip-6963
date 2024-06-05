@@ -10,8 +10,10 @@ interface Eip6963ProviderContext {
   wallets: Record<string, EIP6963ProviderDetail>         // Record of wallets by UUID
   selectedWallet: EIP6963ProviderDetail | null           // Currently selected wallet
   selectedAccount: string | null                         // Account address of selected wallet
+  errorMessage: string | null                            // Error message
   connectWallet: (walletUuid: string) => Promise<void>   // Function to trigger wallet connection
   disconnectWallet: () => void                           // Function to trigger wallet disconnection
+  clearError: () => void                                 // Function to clear error message
 }
 
 /*
@@ -29,11 +31,14 @@ export const Eip6963ProviderContext = createContext<Eip6963ProviderContext>(null
 export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
   // State to hold all detected wallets
   const [wallets, setWallets] = useState<Record<string, EIP6963ProviderDetail>>({})
-  
   // state of current selected wallet's rdns
   const [selectedWalletRdns, setSelectedWalletRdns] = useState<string | null>(null)
   // state of current selected account by wallet's rdns
   const [selectedAccountByWalletRdns, setSelectedAccountByWalletRdns] = useState<SelectedAccountByWallet>({})
+
+  const [errorMessage, setErrorMessage] = useState('')
+  const clearError = () => setErrorMessage('')
+  const setError = (error: string) => setErrorMessage(error)
 
   /* 
     This useEffect handles side effects related to setting up and tearing down event listeners for wallet announcements.
@@ -108,6 +113,8 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
       }
     } catch (error) {
       console.error('Failed to connect to provider:', error)
+      const mmError: MMError = error as MMError
+      setError(`Code: ${mmError.code} \nError Message: ${mmError.message}`)
     }
   }, [wallets, selectedAccountByWalletRdns])
 
@@ -149,8 +156,10 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
     wallets,
     selectedWallet: selectedWalletRdns === null ? null : wallets[selectedWalletRdns],
     selectedAccount: selectedWalletRdns === null ? null : selectedAccountByWalletRdns[selectedWalletRdns],
+    errorMessage,
     connectWallet,
-    disconnectWallet
+    disconnectWallet,
+    clearError,
   }
 
   return (

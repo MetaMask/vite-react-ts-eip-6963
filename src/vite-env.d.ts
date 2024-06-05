@@ -75,3 +75,9 @@ Both `EIP6963AnnounceProviderEvent` and `EIP6963ProviderDetail` look similar, as
   EIP6963ProviderDetail uses an interface to allow a clear definition of an object's structure that classes can implement, 
   useful if different parts of a dApp or different plugins/extensions are expected to provide their own concrete implementations.
 */
+
+// An error object with optional properties, commonly encountered when handling MetaMask `eth_requestAccounts` errors
+interface MMError {
+  code?: string
+  message?: string
+}
