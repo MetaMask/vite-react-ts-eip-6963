@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useCallback, useEffect, useState } from "react"
+import { PropsWithChildren, createContext, useCallback, useEffect, useState } from 'react'
 
 // A React component leveraging React `context` to manage state and interaction with EIP-6963 compliant wallets.
 
@@ -15,12 +15,12 @@ interface Eip6963ProviderContext {
 }
 
 /*
-  The WindowEventMap interface is extended to include the custom event "eip6963:announceProvider". 
+  The WindowEventMap interface is extended to include the custom event 'eip6963:announceProvider'. 
   Helps TypeScript understand a new event type, for type safety when attaching event listeners or dispatching these events.
 */
 declare global{
   interface WindowEventMap {
-    "eip6963:announceProvider": CustomEvent
+    'eip6963:announceProvider': CustomEvent
   }
 }
 
@@ -41,9 +41,9 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
     We also handle the clean up for those listeners (removing them) when the component unmounts (in the return).
 
     In short this useEffect:
-    - Listens for "eip6963:announceProvider" events, which should be dispatched by wallet providers announcing their presence.
+    - Listens for 'eip6963:announceProvider' events, which should be dispatched by wallet providers announcing their presence.
     - Updates the wallets state with new or updated wallet details.
-    - Dispatches an "eip6963:requestProvider" event to request wallet providers to announce themselves.
+    - Dispatches an 'eip6963:requestProvider' event to request wallet providers to announce themselves.
   */
   useEffect(() => {
     /* NEW: Load state from local storage */
@@ -71,10 +71,10 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
       }
     }
 
-    window.addEventListener("eip6963:announceProvider", onAnnouncement)
-    window.dispatchEvent(new Event("eip6963:requestProvider"))
+    window.addEventListener('eip6963:announceProvider', onAnnouncement)
+    window.dispatchEvent(new Event('eip6963:requestProvider'))
     
-    return () => window.removeEventListener("eip6963:announceProvider", onAnnouncement)
+    return () => window.removeEventListener('eip6963:announceProvider', onAnnouncement)
   }, [])
 
 
@@ -107,7 +107,7 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
         }))
       }
     } catch (error) {
-      console.error("Failed to connect to provider:", error)
+      console.error('Failed to connect to provider:', error)
     }
   }, [wallets, selectedAccountByWalletRdns])
 
@@ -127,11 +127,11 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
       // Revoke permissions
       try {
         await wallet.provider.request({
-          method: "wallet_revokePermissions",
-          params: [{ "eth_accounts": {} }]
+          method: 'wallet_revokePermissions',
+          params: [{ 'eth_accounts': {} }]
         });
       } catch (error) {
-        console.error("Failed to revoke permissions:", error);
+        console.error('Failed to revoke permissions:', error);
       }
     }
   }, [selectedWalletRdns, wallets])
@@ -165,7 +165,7 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
 
     Error Handling: You handle errors in the connectWallet function by logging them. 
       Consider how you might want to communicate these errors to the user.
-    Asynchronous Effects: Your setup assumes wallets will always correctly announce themselves in response to "eip6963:requestProvider". 
+    Asynchronous Effects: Your setup assumes wallets will always correctly announce themselves in response to 'eip6963:requestProvider'. 
       We might want to consider timeout or retry logic if wallets do not announce themselves as expected.
     Performance: The use of spreading in state updates (setWallets and setSelectedAccountByWalletUuid) 
       could potentially be optimized if you find performance issues with large numbers of wallets or frequent updates.

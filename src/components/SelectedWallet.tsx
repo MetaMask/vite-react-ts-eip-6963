@@ -1,4 +1,4 @@
-import { useEip6963Provider } from "~/hooks/useEip6963Provider"
+import { useEip6963Provider } from '~/hooks/useEip6963Provider'
 import { formatAddress } from '~/utils'
 import styles from './SelectedWallet.module.css'
 
@@ -7,7 +7,7 @@ export const SelectedWallet = () => {
 
   return (
     <>
-      <h2 className={styles.userAccount}>{selectedAccount ? "" : "No "}Wallet Selected</h2>
+      <h2 className={styles.userAccount}>{selectedAccount ? '' : 'No '}Wallet Selected</h2>
       {selectedAccount &&
         <>
           <div className={styles.logo}>
