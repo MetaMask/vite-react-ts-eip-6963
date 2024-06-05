@@ -7,6 +7,7 @@ function App() {
   return (
     <Eip6963Provider>
       <WalletList />
+      <hr />
       <SelectedWallet />
     </Eip6963Provider>
   )
