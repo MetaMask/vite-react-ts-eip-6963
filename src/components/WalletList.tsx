@@ -7,7 +7,7 @@ export const WalletList = () => {
   return (
     <>
       <h2>Wallets Detected:</h2>
-      <div className={styles.display}>
+      <div className={styles.walletList}>
         {
           Object.keys(wallets).length > 0 ? Object.values(wallets).map((provider: EIP6963ProviderDetail) => (
             <button key={provider.info.uuid} onClick={() => connectWallet(provider.info.rdns)}>
