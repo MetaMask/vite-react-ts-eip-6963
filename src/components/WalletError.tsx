@@ -6,7 +6,7 @@ export const WalletError = () => {
   const isError = !!errorMessage
 
   return (
-    <div className={styles.mmError} style={isError ? { backgroundColor: 'brown' } : {}}>
+    <div className={styles.walletError} style={isError ? { backgroundColor: 'brown' } : {}}>
       {isError &&
         <div onClick={clearError}>
           <strong>Error:</strong> {errorMessage}
