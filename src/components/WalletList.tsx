@@ -1,8 +1,8 @@
-import { useEip6963Provider } from '~/hooks/useEip6963Provider'
+import { useWalletProvider } from '~/hooks/useWalletProvider'
 import styles from './WalletList.module.css'
 
 export const WalletList = () => {
-  const { wallets, connectWallet } = useEip6963Provider()
+  const { wallets, connectWallet } = useWalletProvider()
   
   return (
     <>

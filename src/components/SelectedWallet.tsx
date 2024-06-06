@@ -1,9 +1,9 @@
-import { useEip6963Provider } from '~/hooks/useEip6963Provider'
+import { useWalletProvider } from '~/hooks/useWalletProvider'
 import { formatAddress } from '~/utils'
 import styles from './SelectedWallet.module.css'
 
 export const SelectedWallet = () => {
-  const { selectedWallet, selectedAccount, disconnectWallet } = useEip6963Provider()
+  const { selectedWallet, selectedAccount, disconnectWallet } = useWalletProvider()
 
   return (
     <>

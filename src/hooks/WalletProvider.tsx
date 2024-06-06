@@ -6,7 +6,7 @@ import { PropsWithChildren, createContext, useCallback, useEffect, useState } fr
 type SelectedAccountByWallet = Record<string, string | null>
 
 // Defines the shape of the context
-interface Eip6963ProviderContext {
+interface WalletProviderContext {
   wallets: Record<string, EIP6963ProviderDetail>         // Record of wallets by UUID
   selectedWallet: EIP6963ProviderDetail | null           // Currently selected wallet
   selectedAccount: string | null                         // Account address of selected wallet
@@ -26,9 +26,9 @@ declare global{
   }
 }
 
-export const Eip6963ProviderContext = createContext<Eip6963ProviderContext>(null)
+export const WalletProviderContext = createContext<WalletProviderContext>(null)
 
-export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
+export const WalletProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // State to hold all detected wallets
   const [wallets, setWallets] = useState<Record<string, EIP6963ProviderDetail>>({})
   // state of current selected wallet's rdns
@@ -152,7 +152,7 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
       Any component within the tree wrapped by <Eip6963Provider> can use useContext(Eip6963ProviderContext) to access 
       and manipulate wallets, connect to them, and keep track of the selected account.
   */
-  const contextValue: Eip6963ProviderContext = {
+  const contextValue: WalletProviderContext = {
     wallets,
     selectedWallet: selectedWalletRdns === null ? null : wallets[selectedWalletRdns],
     selectedAccount: selectedWalletRdns === null ? null : selectedAccountByWalletRdns[selectedWalletRdns],
@@ -163,9 +163,9 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
   }
 
   return (
-    <Eip6963ProviderContext.Provider value={contextValue}>
+    <WalletProviderContext.Provider value={contextValue}>
       {children}
-    </Eip6963ProviderContext.Provider>
+    </WalletProviderContext.Provider>
   )
 }
 

@@ -1,8 +1,8 @@
-import { useEip6963Provider } from '~/hooks/useEip6963Provider'
+import { useWalletProvider } from '~/hooks/useWalletProvider'
 import styles from './WalletError.module.css'
 
 export const WalletError = () => {
-  const { errorMessage, clearError  } = useEip6963Provider()
+  const { errorMessage, clearError  } = useWalletProvider()
   const isError = !!errorMessage
 
   return (
