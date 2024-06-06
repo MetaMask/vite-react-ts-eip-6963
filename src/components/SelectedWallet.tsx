@@ -17,7 +17,7 @@ export const SelectedWallet = () => {
             <div><strong>uuid:</strong> {selectedWallet.info.uuid}</div>
             <div><strong>rdns:</strong> {selectedWallet.info.rdns}</div>
           </div>
-          <button onClick={disconnectWallet}>Disconnect</button>
+          <button onClick={disconnectWallet}>Disconnect Wallet</button>
         </>
       }
     </>
