@@ -10,7 +10,7 @@ export const SelectedWallet = () => {
       <h2 className={styles.userAccount}>{selectedAccount ? '' : 'No '}Wallet Selected</h2>
       {selectedAccount &&
         <>
-          <div className={styles.logo}>
+          <div className={styles.selectedWallet}>
             <img src={selectedWallet.info.icon} alt={selectedWallet.info.name} />
             <div>{selectedWallet.info.name}</div>
             <div>({formatAddress(selectedAccount)})</div>

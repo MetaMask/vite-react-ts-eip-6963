@@ -1,4 +1,4 @@
-.logo {
+.selectedWallet {
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
@@ -10,12 +10,9 @@
   font-size: 1em;
   font-weight: 500;
 }
-.logo > img {
+.selectedWallet > img {
   width: 2em;
   height: 1.5em;
-  margin-right: 1em;
-}
-.logo > div {
   margin-right: 1em;
 }
 
