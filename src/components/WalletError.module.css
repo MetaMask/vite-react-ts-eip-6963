@@ -1,9 +1,8 @@
 .walletError {
   margin-top: 1em;
   border-radius: 0.5em;
-  height: 36px;
   padding: 16px;
   color: #EFEFEF;
   background-color: transparent;
-  user-select: none; /* Standard syntax */
+  user-select: none;
 }
