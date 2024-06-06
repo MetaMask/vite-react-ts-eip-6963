@@ -77,7 +77,7 @@ Both `EIP6963AnnounceProviderEvent` and `EIP6963ProviderDetail` look similar, as
 */
 
 // An error object with optional properties, commonly encountered when handling MetaMask `eth_requestAccounts` errors
-interface MMError {
+interface WalletError {
   code?: string
   message?: string
 }

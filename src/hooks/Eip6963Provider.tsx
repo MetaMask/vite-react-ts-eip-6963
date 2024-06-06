@@ -113,8 +113,8 @@ export const Eip6963Provider: React.FC<PropsWithChildren> = ({ children }) => {
       }
     } catch (error) {
       console.error('Failed to connect to provider:', error)
-      const mmError: MMError = error as MMError
-      setError(`Code: ${mmError.code} \nError Message: ${mmError.message}`)
+      const walletError: WalletError = error as WalletError
+      setError(`Code: ${walletError.code} \nError Message: ${walletError.message}`)
     }
   }, [wallets, selectedAccountByWalletRdns])
 
