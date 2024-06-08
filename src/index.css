@@ -82,26 +82,17 @@ button {
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
-
   align-items: center;
   border-radius: 0.5em;
   margin-bottom: 0.5em;
+  
   border: 1px solid transparent;
 }
-
 button > img {
   width: 1.5em;
   height: 1.5em;
   margin-right: 1em;
 }
-
-button:hover {
-  border-color: #75079d;
-}
-
-button:first-child {
-  margin-top: 0.5em;
-}
-button:last-child {
-  margin-bottom: 0;
-}
+button:hover { border-color: #75079d; }
+button:first-child { margin-top: 0.5em; }
+button:last-child { margin-bottom: 0; }
