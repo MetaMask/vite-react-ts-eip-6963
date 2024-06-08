@@ -3,7 +3,7 @@ import styles from './WalletList.module.css'
 
 export const WalletList = () => {
   const { wallets, connectWallet } = useWalletProvider()
-  
+
   return (
     <>
       <h2>Wallets Detected:</h2>
