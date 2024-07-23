@@ -9,8 +9,8 @@ export const DiscoverWalletProviders = () => {
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
     try {
-      const accounts = await providerWithInfo.provider.request({ 
-        method: 'eth_requestAccounts' 
+      const accounts = await providerWithInfo.provider.request({
+        method: 'eth_requestAccounts'
       });
 
       setSelectedWallet(providerWithInfo);
@@ -20,16 +20,40 @@ export const DiscoverWalletProviders = () => {
     }
   }
 
+  const handleDisconnect = async (providerWithInfo: EIP6963ProviderDetail) => {
+    try {
+      await providerWithInfo.provider.request({
+        method: 'wallet_revokePermissions',
+        params: [
+          {
+            eth_accounts: {}
+          }
+        ]
+      });
+      if (selectedWallet?.info.name.includes("MetaMask")) {
+        setSelectedWallet(undefined);
+        setUserAccount('')
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <h2>Wallets Detected:</h2>
-      <div>
+      <div className="providers">
         {
           providers.length > 0 ? providers?.map((provider: EIP6963ProviderDetail) => (
-            <button key={provider.info.uuid} onClick={() => handleConnect(provider)} >
-              <img src={provider.info.icon} alt={provider.info.name} />
-              <div>{provider.info.name}</div>
-            </button>
+            <div key={`buttons-${provider.info.uuid}`}>
+              <button key={`connect-${provider.info.uuid}`} onClick={() => handleConnect(provider)} >
+                <img src={provider.info.icon} alt={provider.info.name} />
+                <div>{provider.info.name}</div>
+              </button>
+              {provider.info.name.includes("MetaMask") &&
+                <button key={`disconnect-${provider.info.uuid}`} onClick={() => handleDisconnect(provider)} >Disconnect MetaMask</button>
+              }
+            </div>
           )) :
             <div>
               No Announced Wallet Providers
