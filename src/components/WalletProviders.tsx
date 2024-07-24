@@ -8,15 +8,16 @@ export const DiscoverWalletProviders = () => {
   const providers = useSyncProviders()
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
-    try {
-      const accounts = await providerWithInfo.provider.request({ 
-        method: 'eth_requestAccounts' 
-      });
+    const accounts: string[] | undefined =
+      await (
+        providerWithInfo.provider
+          .request({ method: 'eth_requestAccounts' })
+          .catch(console.error)
+      ) as string[] | undefined;
 
-      setSelectedWallet(providerWithInfo);
-      setUserAccount(accounts?.[0]);
-    } catch (error) {
-      console.error(error);
+    if (accounts?.[0]) {
+      setSelectedWallet(providerWithInfo)
+      setUserAccount(accounts?.[0])
     }
   }
 
