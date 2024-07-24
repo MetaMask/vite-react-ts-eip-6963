@@ -1,8 +1,8 @@
 import './App.css'
-import { DiscoverWalletProviders } from './components/WalletProviders'
+import { WalletProviders } from './components/WalletProviders'
 
 function App() {
-  return <DiscoverWalletProviders/>
+  return <WalletProviders/>
 }
 
 export default App
