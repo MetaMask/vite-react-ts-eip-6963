@@ -2,11 +2,13 @@ import styles from './WalletProviders.module.css'
 import { useState } from 'react'
 import { useSyncProviders } from '../hooks/useSyncProviders'
 import { formatAddress } from '~/utils'
-import { AiOutlineDisconnect } from 'react-icons/ai';
+import { FaRegCircleCheck } from "react-icons/fa6"
+import { MdLogout } from "react-icons/md"
 
 export const WalletProviders = () => {
   const [selectedWallet, setSelectedWallet] = useState<EIP6963ProviderDetail>()
   const [userAccount, setUserAccount] = useState<string>('')
+  const [metamaskConnected, setMetamaskConnected] = useState<boolean>(false)
   const providers = useSyncProviders()
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
@@ -21,6 +23,10 @@ export const WalletProviders = () => {
       setSelectedWallet(providerWithInfo)
       setUserAccount(accounts?.[0])
     }
+    if (providerWithInfo.info.name.toLowerCase().includes("metamask") && accounts?.[0]) {
+      setMetamaskConnected(providerWithInfo.info.name.toLowerCase().includes("metamask") ? true : false)
+    }
+
   }
 
   const handleDisconnect = async (providerWithInfo: EIP6963ProviderDetail) => {
@@ -34,6 +40,9 @@ export const WalletProviders = () => {
         setSelectedWallet(undefined)
         setUserAccount('')
       }
+      if (providerWithInfo.info.name.toLowerCase().includes("metamask")) {
+        setMetamaskConnected(false)
+      }
     } catch (error) {
       console.error('Failed to revoke permissions:', error)
     }
@@ -45,20 +54,24 @@ export const WalletProviders = () => {
       <div className={styles.buttonDisplay}>
         {providers.length > 0 ? providers?.map((provider: EIP6963ProviderDetail) => (
           <div key={provider.info.uuid} className={styles.walletButtons}>
-            <button 
+            <button
               disabled={selectedWallet?.info.uuid === provider.info.uuid}
-              className={`${styles.walletButton} ${selectedWallet?.info.uuid !== provider.info.uuid ? styles.notSelected : ''}`} 
+              className={`${styles.walletButton} ${selectedWallet?.info.uuid !== provider.info.uuid ? styles.notSelected : ''}`}
               onClick={() => handleConnect(provider)}
               title={`${selectedWallet?.info.uuid === provider.info.uuid ? provider.info.name + ' Selected' : 'Select ' + provider.info.name}`}>
               <img src={provider.info.icon} alt={provider.info.name} />
-              <div>{provider.info.name}</div>
+              {selectedWallet?.info.uuid === provider.info.uuid
+                ? <>
+                  <div className="address"> {formatAddress(userAccount)}</div>
+                  <div className="check"><FaRegCircleCheck /></div>
+                </>
+                : <div>{provider.info.name}</div>
+              }
             </button>
-            {provider.info.name.toLowerCase().includes("metamask") &&
-              <button 
-                className={styles.iconButton} 
-                onClick={() => handleDisconnect(provider)}
-                title="Disconnect MetaMask">
-                  <AiOutlineDisconnect />
+            {provider.info.name.toLowerCase().includes("metamask") && (selectedWallet?.info.uuid === provider.info.uuid
+              || (selectedWallet?.info.uuid !== provider.info.uuid && metamaskConnected)) &&
+              <button className={styles.iconButton} onClick={() => handleDisconnect(provider)} title="Disconnect / Revoke Permission">
+                <MdLogout />
               </button>
             }
           </div>
@@ -68,15 +81,6 @@ export const WalletProviders = () => {
           </div>
         }
       </div>
-      <hr />
-      <h2 className={styles.userAccount}>{userAccount ? "" : "No "}Wallet Selected</h2>
-      {userAccount && selectedWallet &&
-        <div className={styles.selectedWallet}>
-          <img src={selectedWallet.info.icon} alt={selectedWallet.info.name} />
-          <div>{selectedWallet.info.name}</div>
-          <div>({formatAddress(userAccount)})</div>
-        </div>
-      }
     </>
   )
 }

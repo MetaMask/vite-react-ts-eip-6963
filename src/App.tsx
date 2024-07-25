@@ -2,7 +2,9 @@ import './App.css'
 import { WalletProviders } from './components/WalletProviders'
 
 function App() {
-  return <WalletProviders/>
+  return <div className="container">
+    <WalletProviders/>
+  </div>
 }
 
 export default App

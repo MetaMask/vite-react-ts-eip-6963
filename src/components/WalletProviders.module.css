@@ -1,9 +1,11 @@
 .walletButtons {
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 100%; /* Ensure the button takes the full width of its container */
 }
+
 .buttonDisplay {
   margin-bottom: 1em;
 }
@@ -19,12 +21,12 @@ button.walletButton:only-child {
 }
 
 .walletButton {
-  margin-right: 0.5em;
-  min-width: 17em;
+  min-width: 272px;
 }
 .iconButton {
   height: 45px;
   margin-top: 0.5em;
+  color: #DD0055;
 }
 
 .selectedWallet {

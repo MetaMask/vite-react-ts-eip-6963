@@ -17,6 +17,12 @@ body {
   display: flex;
 }
 
+.container {
+  margin: 0 auto;
+  padding: 1em;
+  max-width: 420px;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -50,6 +56,14 @@ button {
   transition: border-color 0.25s;
   border: 1px solid transparent;
   background-color: #1a1a1a;
+  margin-top: 0.5em;
+}
+button > * {
+  flex-grow: 0; /* Make each item take up all the available space */
+}
+button > .check {
+  margin-left: auto; /* Push the last item to the right */
+  color: green;
 }
 button > img {
   width: 24px;
@@ -63,11 +77,8 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-button:first-child {
-  margin-top: 0.5em;
-}
-button:last-child {
-  margin-bottom: 0;
+button > .address {
+  color: white;
 }
 
 @media (prefers-color-scheme: light) {
