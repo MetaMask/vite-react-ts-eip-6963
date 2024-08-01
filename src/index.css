@@ -3,15 +3,18 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: left;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+body {
+  display: flex;
 }
 
 a {
@@ -23,47 +26,42 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
-hr {
-  margin-top: 2em;
-  height: 1px;
-}
-
 button {
-  min-width: 12em;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
 
+  cursor: pointer;
+  user-select: none;
+
   align-items: center;
-  border-radius: 0.5em;
-  padding: 0.6em 1.2em;
-  margin-bottom: 0.5em;
+  border-radius: 8px;
+  padding: 8px 20px;
 
   font-family: inherit;
   font-size: 1em;
   font-weight: 500;
 
-  cursor: pointer;
-
   transition: border-color 0.25s;
   border: 1px solid transparent;
   background-color: #1a1a1a;
+  margin-top: 0.5em;
+}
+button > * {
+  flex-grow: 0; /* Make each item take up all the available space */
+}
+button > .check {
+  margin-left: auto; /* Push the last item to the right */
+  color: green;
 }
 button > img {
-  width: 1.5em;
-  height: 1.5em;
+  width: 24px;
+  height: 24px;
   margin-right: 1em;
 }
 button:hover {
@@ -73,11 +71,8 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-button:first-child {
-  margin-top: 0.5em;
-}
-button:last-child {
-  margin-bottom: 0;
+button > .address {
+  color: white;
 }
 
 @media (prefers-color-scheme: light) {

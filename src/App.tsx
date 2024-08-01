@@ -1,8 +1,10 @@
 import './App.css'
-import { DiscoverWalletProviders } from './components/WalletProviders'
+import { WalletProviders } from './components/WalletProviders'
 
 function App() {
-  return <DiscoverWalletProviders/>
+  return <div className="container">
+    <WalletProviders/>
+  </div>
 }
 
 export default App
